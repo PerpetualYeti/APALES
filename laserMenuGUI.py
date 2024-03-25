@@ -43,7 +43,7 @@ root.geometry("1000x500")
 root.title("APALES")
 
 # Create the "Laser Parameters" directory if it doesn't exist
-laser_parameters_dir = "Laser Parameters"
+laser_parameters_dir = "laser_parameters"
 os.makedirs(laser_parameters_dir, exist_ok=True)
 
 def save():
@@ -54,9 +54,8 @@ def save():
 
     # Write the data to a file in the "Laser Parameters" directory
     with open(os.path.join(laser_parameters_dir, f'{name}_Parameters.txt'), 'w') as file:
-        file.write(f'Name: {name}\n')
-        file.write(f'Speed: {speed}\n')
-        file.write(f'Power: {power}\n')
+        file.write(f'F{speed}\n')
+        file.write(f'S{power}\n')
 
 # Display "Saved!" in the same window
     savedLabel.config(text="Saved!", font=("Arial", 12))
@@ -121,7 +120,7 @@ nameLabel = tk.Label(root, text="Name of the material:")
 nameEntry = tk.Entry(root)
 speedLabel = tk.Label(root, text="Laser speed (mm/min):")
 speedEntry = tk.Entry(root)
-powerLabel = tk.Label(root, text="Laser power (Num):")
+powerLabel = tk.Label(root, text="Laser power (0-1000):")
 powerEntry = tk.Entry(root)
 
 

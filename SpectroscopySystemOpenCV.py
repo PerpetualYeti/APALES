@@ -26,7 +26,7 @@ if not os.path.exists(folder_path):
 
 
 # Initialize the USB webcam (change the index if needed)
-cap = cv2.VideoCapture(0)  # Change the index to 0, 1, 2, etc. depending on your setup
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Change the index to 0, 1, 2, etc. depending on your setup
 
 
 # In[76]:
@@ -41,9 +41,9 @@ if not cap.isOpened():
 # In[ ]:
 
 
-# Set the resolution to 1920x1080
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+# Set the resolution to 2592x1944
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
 
 
 # In[ ]:

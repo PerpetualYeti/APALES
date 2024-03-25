@@ -1,3 +1,0 @@
-Name: Under Test
-Speed: 100
-Power: 100
