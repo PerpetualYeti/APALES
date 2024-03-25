@@ -87,7 +87,7 @@ cv2.destroyAllWindows()
 
 
 # Example usage
-output_folder = "Reference Data"
+output_folder = "reference_data"
 x_start = 780      # Starting x-coordinate of the area
 y_start = 451      # Starting y-coordinate of the area
 x_end = 985      # Ending x-coordinate of the area
@@ -109,8 +109,8 @@ if x_start >= x_end or y_start >= y_end:
 # Extract the specified area
 area = image[y_start:y_end, x_start:x_end]
 
-# Create the "Reference Data" directory if it doesn't exist
-reference_data_dir = "Reference Data"
+# Create the "reference_data" directory if it doesn't exist
+reference_data_dir = "reference_data"
 os.makedirs(reference_data_dir, exist_ok=True)
 
 # Convert the sliced area to grayscale
@@ -122,7 +122,7 @@ averaged_array = np.mean(gray_area, axis=0)
 # Convert the float array to string with desired precision
 float_str = "\n".join([f"{value:.3f}" for value in averaged_array])
 
-# Write the 1D array to a text file in the "Reference Data" directory
+# Write the 1D array to a text file in the "reference_data" directory
 reference_array_path = os.path.join(reference_data_dir, "reference_array.txt")
 with open(reference_array_path, "w") as f:
     f.write(float_str)
