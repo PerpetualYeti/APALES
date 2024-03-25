@@ -1,0 +1,3 @@
+Name: Paper Testing
+Speed: 100
+Power: 100

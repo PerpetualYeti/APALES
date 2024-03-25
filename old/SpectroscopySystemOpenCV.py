@@ -7,11 +7,8 @@
 import cv2
 import os
 import numpy as np
-#import matplotlib.pyplot as plt
-import sys
+import matplotlib.pyplot as plt
 
-# The first argument is the script name, so the material name is the second argument
-material_name = sys.argv[1]
 
 # In[74]:
 
@@ -26,7 +23,7 @@ if not os.path.exists(folder_path):
 
 
 # Initialize the USB webcam (change the index if needed)
-cap = cv2.VideoCapture(0)  # Change the index to 0, 1, 2, etc. depending on your setup
+cap = cv2.VideoCapture(1)  # Change the index to 0, 1, 2, etc. depending on your setup
 
 
 # In[76]:
@@ -88,10 +85,11 @@ cv2.destroyAllWindows()
 
 # Example usage
 output_folder = "output_sliced_area"
-x_start = 780      # Starting x-coordinate of the area
-y_start = 451      # Starting y-coordinate of the area
-x_end = 985      # Ending x-coordinate of the area
-y_end = 457        # Ending y-coordinate of the area
+x_start = 914      # Starting x-coordinate of the area
+y_start = 583      # Starting y-coordinate of the area
+x_end = 1091       # Ending x-coordinate of the area
+y_end = 589  
+
 
 # In[ ]:
 
@@ -119,22 +117,11 @@ cv2.imwrite(os.path.join(output_folder, "sliced_area.jpg"), area)
 # Convert the sliced area to grayscale
 gray_area = cv2.cvtColor(area, cv2.COLOR_BGR2GRAY)
 
-output_folder_existing_materials = "Existing Materials"
-
-# Save the grayscale area to the "output_sliced_area" directory
+# Write the grayscale area to disk
 cv2.imwrite(os.path.join(output_folder, "grayscale_sliced_area.jpg"), gray_area)
 
-# Convert the 2D grayscale array to a 1D array by averaging each column
-averaged_array = np.mean(gray_area, axis=0)
+print("Image area sliced and converted to grayscale successfully!")
 
-# Convert the float array to string with desired precision
-float_str = "\n".join([f"{value:.3f}" for value in averaged_array])
-
-# Write the 1D array to a text file in the "Existing Materials" directory
-with open(os.path.join(output_folder_existing_materials, f"{material_name}_grayscale_data.txt"), "w") as f:
-    f.write(float_str)
-
-print("Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
 # In[ ]:
 
@@ -154,7 +141,7 @@ gray_image_dimensions
 averaged_array = np.mean(gray_area, axis=0)
 
 
-"""# In[ ]:
+# In[ ]:
 
 
 def plot_1d_array(data):
@@ -174,4 +161,5 @@ def plot_1d_array(data):
 
 
 # Call the function to plot the 1D array
-plot_1d_array(averaged_array) """
+plot_1d_array(averaged_array)
+

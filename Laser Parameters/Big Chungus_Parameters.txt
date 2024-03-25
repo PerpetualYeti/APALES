@@ -1,0 +1,3 @@
+Name: Big Chungus
+Speed: 100
+Power: 100

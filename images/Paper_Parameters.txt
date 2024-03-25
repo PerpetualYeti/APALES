@@ -1,0 +1,3 @@
+Name: Paper
+Speed: 100
+Power: 100

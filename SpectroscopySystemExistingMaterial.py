@@ -11,7 +11,7 @@ import numpy as np
 import sys
 
 # The first argument is the script name, so the material name is the second argument
-material_name = sys.argv[1]
+# material_name = sys.argv[1]
 
 # In[74]:
 
@@ -87,7 +87,7 @@ cv2.destroyAllWindows()
 
 
 # Example usage
-output_folder = "output_sliced_area"
+output_folder = "Reference Data"
 x_start = 780      # Starting x-coordinate of the area
 y_start = 451      # Starting y-coordinate of the area
 x_end = 985      # Ending x-coordinate of the area
@@ -109,20 +109,12 @@ if x_start >= x_end or y_start >= y_end:
 # Extract the specified area
 area = image[y_start:y_end, x_start:x_end]
 
-# Create output folder if it doesn't exist
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
-
-# Write the sliced area to disk
-cv2.imwrite(os.path.join(output_folder, "sliced_area.jpg"), area)
+# Create the "Reference Data" directory if it doesn't exist
+reference_data_dir = "Reference Data"
+os.makedirs(reference_data_dir, exist_ok=True)
 
 # Convert the sliced area to grayscale
 gray_area = cv2.cvtColor(area, cv2.COLOR_BGR2GRAY)
-
-output_folder_existing_materials = "Existing Materials"
-
-# Save the grayscale area to the "output_sliced_area" directory
-cv2.imwrite(os.path.join(output_folder, "grayscale_sliced_area.jpg"), gray_area)
 
 # Convert the 2D grayscale array to a 1D array by averaging each column
 averaged_array = np.mean(gray_area, axis=0)
@@ -130,11 +122,13 @@ averaged_array = np.mean(gray_area, axis=0)
 # Convert the float array to string with desired precision
 float_str = "\n".join([f"{value:.3f}" for value in averaged_array])
 
-# Write the 1D array to a text file in the "Existing Materials" directory
-with open(os.path.join(output_folder_existing_materials, f"{material_name}_grayscale_data.txt"), "w") as f:
+# Write the 1D array to a text file in the "Reference Data" directory
+reference_array_path = os.path.join(reference_data_dir, "reference_array.txt")
+with open(reference_array_path, "w") as f:
     f.write(float_str)
 
 print("Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
+
 
 # In[ ]:
 
@@ -152,26 +146,3 @@ gray_image_dimensions
 
 
 averaged_array = np.mean(gray_area, axis=0)
-
-
-"""# In[ ]:
-
-
-def plot_1d_array(data):
-    # Create a figure and axis object
-    fig, ax = plt.subplots()
-    
-    # Plot the 1D array
-    ax.plot(data)
-    
-    # Add labels and title
-    ax.set_xlabel('Index')
-    ax.set_ylabel('Value')
-    ax.set_title('1D Array Plot')
-    
-    # Show the plot
-    plt.show()
-
-
-# Call the function to plot the 1D array
-plot_1d_array(averaged_array) """

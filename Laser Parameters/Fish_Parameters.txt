@@ -1,0 +1,3 @@
+Name: Fish
+Speed: 100
+Power: 100

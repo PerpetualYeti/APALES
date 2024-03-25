@@ -1,0 +1,3 @@
+Name: Paper Towel TESTING
+Speed: 100
+Power: 100
