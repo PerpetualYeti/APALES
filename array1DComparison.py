@@ -47,8 +47,10 @@ closest_array_name = compare_arrays_to_reference(list(arrays.values()), referenc
 # Print the filename of the closest array to the reference array
 print(f"The closest array to the reference array is: {closest_array_name}")
 
+"""
 # Ask the user to confirm
-user_input = input("Is this material correct? (Y/N)")
+print("Is this material correct? (Y/N)")
+user_input = input()
 if user_input.lower() == "y":
     print("Proceeding to the engraving process.")
     # Add your engraving process code here
@@ -57,3 +59,4 @@ elif user_input.lower() == "n":
     # Add your code to handle this situation here
 else:
     print("Invalid input. Please enter 'Yes' or 'No'.")
+"""

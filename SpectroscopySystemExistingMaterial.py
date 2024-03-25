@@ -66,7 +66,7 @@ if not ret:
 
 
 # Display the captured frame
-cv2.imshow('Captured Image', frame)
+# cv2.imshow('Captured Image', frame)
 
 
 # In[ ]:

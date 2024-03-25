@@ -66,7 +66,7 @@ if not ret:
 
 
 # Display the captured frame
-cv2.imshow('Captured Image', frame)
+#cv2.imshow('Captured Image', frame)
 
 
 # In[ ]:
@@ -119,7 +119,7 @@ cv2.imwrite(os.path.join(output_folder, "sliced_area.jpg"), area)
 # Convert the sliced area to grayscale
 gray_area = cv2.cvtColor(area, cv2.COLOR_BGR2GRAY)
 
-output_folder_existing_materials = "Existing Materials"
+output_folder_existing_materials = "existing_materials"
 
 # Save the grayscale area to the "output_sliced_area" directory
 cv2.imwrite(os.path.join(output_folder, "grayscale_sliced_area.jpg"), gray_area)
