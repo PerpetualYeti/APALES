@@ -5,6 +5,9 @@ import numpy as np
 from tkinter import messagebox
 import os
 import subprocess
+import queue
+from tkinter import scrolledtext
+import threading
 
 def selection(event):
     if variable.get() == "New Material":
@@ -36,8 +39,18 @@ def start_spectroscopy_system_existing():
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
 
 def confirm():
-    exec(open("array1DComparison.py").read(), globals(), locals())
+    # Run the array1DComparison.py script and capture its output
+    process = subprocess.Popen(["python", "array1DComparison.py"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
 
+    # Function to read the output line by line and display it in the output box
+    def read_output():
+        for line in iter(process.stdout.readline, ''):
+            output_box.insert(tk.END, line)
+            output_box.see(tk.END)
+
+    # Start a new thread to read the output
+    threading.Thread(target=read_output).start()
+    
 root = tk.Tk()
 root.geometry("1000x500")
 root.title("APALES")
@@ -137,5 +150,74 @@ startButtonExisting = tk.Button(root, text="Start Existing", command=start_spect
 
 # Create a label for the button
 startLabelExisting = tk.Label(root, text="Start Spectroscopy System Existing", font=("Arial", 12))
+
+import tkinter as tk
+from tkinter import scrolledtext
+import subprocess
+import threading
+import queue
+
+# Create a new window
+root = tk.Tk()
+
+# Create a ScrolledText widget for displaying the output
+output_box = scrolledtext.ScrolledText(root, width=50, height=10)
+output_box.pack()
+
+# Create an Entry widget for user input
+input_box = tk.Entry(root)
+input_box.pack()
+
+# Create a queue for user input
+input_queue = queue.Queue()
+
+# Function to handle the user's input
+def handle_input(event=None):
+    # Get the user's input
+    user_input = input_box.get()
+
+    # Clear the input box
+    input_box.delete(0, tk.END)
+
+    # Add the user's input to the queue
+    input_queue.put(user_input + '\n')
+
+    # Handle the user's input
+    if user_input.lower() == "y":
+        output_box.insert(tk.END, "Proceeding to the engraving process.\n")
+        # Add your engraving process code here
+    elif user_input.lower() == "n":
+        output_box.insert(tk.END, "Please input the data manually as a 'New Material' in the GUI.\n")
+        # Add your code to handle this situation here
+    else:
+        output_box.insert(tk.END, "Invalid input. Please enter 'Yes' or 'No'.\n")
+
+    # Scroll the output box to the end
+    output_box.see(tk.END)
+
+# Bind the Return key to the handle_input function
+root.bind("<Return>", handle_input)
+
+# Create a "Submit" button
+submit_button = tk.Button(root, text="Submit", command=handle_input)
+submit_button.pack()
+
+def confirm():
+    # Run the array1DComparison.py script and capture its output
+    process = subprocess.Popen(["python", "array1DComparison.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
+
+    # Function to write the user's input to the process
+    def write_input():
+        while True:
+            # Get the user's input from the queue
+            user_input = input_queue.get()
+
+            # Write the user's input to the process
+            process.stdin.write(user_input)
+            process.stdin.flush()
+
+    # Start a new thread to write the user's input
+    threading.Thread(target=write_input).start()
+
 
 root.mainloop()

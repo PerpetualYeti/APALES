@@ -47,6 +47,8 @@ closest_array_name = compare_arrays_to_reference(list(arrays.values()), referenc
 # Print the filename of the closest array to the reference array
 print(f"The closest array to the reference array is: {closest_array_name}")
 
+print("Is this material correct? (Y/N)")
+
 """
 # Ask the user to confirm
 print("Is this material correct? (Y/N)")
