@@ -4,6 +4,7 @@ import subprocess
 import numpy as np
 from tkinter import messagebox
 import os
+import subprocess
 
 def selection(event):
     if variable.get() == "New Material":
@@ -26,6 +27,13 @@ def selection(event):
 
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
+
+def start_spectroscopy_system():
+    material_name = nameEntry.get()  # Get the material name from the Entry widget
+    subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
+
+def start_spectroscopy_system_existing():
+    subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
 
 def confirm():
     exec(open("array1DComparison.py").read(), globals(), locals())
@@ -116,11 +124,6 @@ speedEntry = tk.Entry(root)
 powerLabel = tk.Label(root, text="Laser power (Num):")
 powerEntry = tk.Entry(root)
 
-import subprocess
-
-def start_spectroscopy_system():
-    material_name = nameEntry.get()  # Get the material name from the Entry widget
-    subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
 
 # Create the "Start" button
 startButton = tk.Button(root, text="Start", command=start_spectroscopy_system)
@@ -129,9 +132,6 @@ startButton = tk.Button(root, text="Start", command=start_spectroscopy_system)
 startLabel = tk.Label(root, text="Start Spectroscopy System", font=("Arial", 12))
 
 confirmButton = tk.Button(root, text="Confirm", command=confirm)
-
-def start_spectroscopy_system_existing():
-    subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
 
 # Create the "Start Existing" button
 startButtonExisting = tk.Button(root, text="Start Existing", command=start_spectroscopy_system_existing)
