@@ -8,6 +8,9 @@ import subprocess
 import queue
 from tkinter import scrolledtext
 import threading
+import time
+
+start_time = 0
 
 def selection(event):
     if variable.get() == "New Material":
@@ -36,7 +39,11 @@ def start_spectroscopy_system():
     subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
 
 def start_spectroscopy_system_existing():
+    global start_time
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
+    start_time = time.time()
+
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 def confirm():
     # Run the array1DComparison.py script and capture its output
@@ -54,6 +61,7 @@ def confirm():
 root = tk.Tk()
 root.geometry("1000x500")
 root.title("APALES")
+
 
 # Create the "Laser Parameters" directory if it doesn't exist
 laser_parameters_dir = "laser_parameters"
@@ -150,6 +158,27 @@ startButtonExisting = tk.Button(root, text="Start Existing", command=start_spect
 
 # Create a label for the button
 startLabelExisting = tk.Label(root, text="Start Spectroscopy System Existing", font=("Arial", 12))
+# Variable to keep track of the laser pulse state
+laser_pulse_on = False
+
+# Function to handle the laser pulse button click
+def toggle_laser_pulse():
+    global laser_pulse_on
+
+    # Toggle the laser pulse state
+    laser_pulse_on = not laser_pulse_on
+
+    # Update the laser pulse button text
+    if laser_pulse_on:
+        laser_pulse_button.config(text="Laser Pulse: ON")
+        # Add your code to turn on the laser pulse here
+    else:
+        laser_pulse_button.config(text="Laser Pulse: OFF")
+        # Add your code to turn off the laser pulse here
+
+# Create a Button widget for the laser pulse
+laser_pulse_button = tk.Button(root, text="Laser Pulse: OFF", command=toggle_laser_pulse)
+laser_pulse_button.pack()
 
 import tkinter as tk
 from tkinter import scrolledtext

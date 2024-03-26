@@ -42,8 +42,8 @@ if not cap.isOpened():
 
 
 # Set the resolution to 2592x1944
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 2560)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1440)
 
 
 # In[ ]:
@@ -88,10 +88,10 @@ cv2.destroyAllWindows()
 
 # Example usage
 output_folder = "output_sliced_area"
-x_start = 780      # Starting x-coordinate of the area
-y_start = 451      # Starting y-coordinate of the area
-x_end = 985      # Ending x-coordinate of the area
-y_end = 457        # Ending y-coordinate of the area
+x_start = 290      # Starting x-coordinate of the area
+y_start = 833      # Starting y-coordinate of the area
+x_end = 493      # Ending x-coordinate of the area
+y_end = 867        # Ending y-coordinate of the area
 
 # In[ ]:
 
