@@ -18,16 +18,16 @@ def selection(event):
         nameEntry.pack()
         speedLabel.pack()
         speedEntry.pack()
-        powerLabel.pack()
-        powerEntry.pack()
+        pwmLabel.pack()
+        pwmEntry.pack()
         confirmButton.pack_forget()  # Unpack the "Confirm" button
     else:
         nameLabel.pack_forget()
         nameEntry.pack_forget()
         speedLabel.pack_forget()
         speedEntry.pack_forget()
-        powerLabel.pack_forget()
-        powerEntry.pack_forget()
+        pwmLabel.pack_forget()
+        pwmEntry.pack_forget()
         confirmButton.pack()  # Pack the "Confirm" button
 
 
@@ -71,12 +71,12 @@ def save():
     # Get the material data
     name = nameEntry.get()
     speed = speedEntry.get()
-    power = powerEntry.get()
+    pwm = pwmEntry.get()
 
     # Write the data to a file in the "Laser Parameters" directory
     with open(os.path.join(laser_parameters_dir, f'{name}_Parameters.txt'), 'w') as file:
         file.write(f'F{speed}\n')
-        file.write(f'S{power}\n')
+        file.write(f'S{int(float(pwm)*10)}\n')
 
 # Display "Saved!" in the same window
     savedLabel.config(text="Saved!", font=("Arial", 12))
@@ -95,8 +95,8 @@ def selection(event):
         nameEntry.pack()
         speedLabel.pack()
         speedEntry.pack()
-        powerLabel.pack()
-        powerEntry.pack()
+        pwmLabel.pack()
+        pwmEntry.pack()
         saveButton.pack()  # Pack the "Save" button
         startLabel.pack()  # Pack the "Start Spectroscopy System" label
         startButton.pack()  # Pack the "Start" button
@@ -108,8 +108,8 @@ def selection(event):
         nameEntry.pack_forget()
         speedLabel.pack_forget()
         speedEntry.pack_forget()
-        powerLabel.pack_forget()
-        powerEntry.pack_forget()
+        pwmLabel.pack_forget()
+        pwmEntry.pack_forget()
         saveButton.pack_forget()  # Unpack the "Save" button
         startLabel.pack_forget()  # Unpack the "Start Spectroscopy System" label
         startButton.pack_forget()  # Unpack the "Start" button
@@ -141,8 +141,8 @@ nameLabel = tk.Label(root, text="Name of the material:")
 nameEntry = tk.Entry(root)
 speedLabel = tk.Label(root, text="Laser speed (mm/min):")
 speedEntry = tk.Entry(root)
-powerLabel = tk.Label(root, text="Laser power (0-1000):")
-powerEntry = tk.Entry(root)
+pwmLabel = tk.Label(root, text="S-Max (G-code parameter):")
+pwmEntry = tk.Entry(root)
 
 
 # Create the "Start" button
@@ -161,6 +161,10 @@ startLabelExisting = tk.Label(root, text="Start Spectroscopy System Existing", f
 # Variable to keep track of the laser pulse state
 laser_pulse_on = False
 
+# Directory for the laser pulse files
+laser_pulse_dir = "Laser Pulse"
+os.makedirs(laser_pulse_dir, exist_ok=True)
+
 # Function to handle the laser pulse button click
 def toggle_laser_pulse():
     global laser_pulse_on
@@ -175,6 +179,10 @@ def toggle_laser_pulse():
     else:
         laser_pulse_button.config(text="Laser Pulse: OFF")
         # Add your code to turn off the laser pulse here
+
+    # Write the current state of the laser pulse to a file
+    with open(os.path.join(laser_pulse_dir, 'LaserPulseState.txt'), 'w') as file:
+        file.write("ON" if laser_pulse_on else "OFF")
 
 # Create a Button widget for the laser pulse
 laser_pulse_button = tk.Button(root, text="Laser Pulse: OFF", command=toggle_laser_pulse)
