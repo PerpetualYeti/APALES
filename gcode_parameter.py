@@ -31,7 +31,7 @@ f_param = r'F\d+'
 
 gcode_dir = 'gcode_examples'
 
-original_gcode = os.path.join(gcode_dir,'rectangle_face.nc')
+original_gcode = os.path.join(gcode_dir,'rectangle_face2.nc')
 updated_gcode = os.path.join(gcode_dir,'output.nc')
 
 def update_parameter():
@@ -80,6 +80,6 @@ def modify_s(match):
 
 
 if __name__ == "__main__":
-    read_parameter('laser_parameters\Water_Parameters.txt')
+    read_parameter('laser_parameters\wood_Parameters.txt')
     update_parameter()
     
