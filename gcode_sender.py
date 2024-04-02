@@ -15,7 +15,7 @@ def send_wake_up(ser):
     time.sleep(0.5)   #    Wait for Printrbot to initialize
     ser.flushInput()  # Flush startup text in serial input
 
-GRBL_port_path = 'COM4'
+GRBL_port_path = 'COM6'
 gcode_path = os.path.join('gcode_examples', 'output.nc')
  
 ## show values ##
