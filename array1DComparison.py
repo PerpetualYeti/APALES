@@ -1,3 +1,13 @@
+# Senior Design 2 Spring 2024 Group 5: APALES
+# Authors: Kavinaash Jesurajah, Nolan McGinley
+# array1DComparison.py
+
+
+""" 
+Description: Python module to do ...
+UPDATE THIS COMMENT, KAV
+"""
+
 import os
 import numpy as np
 

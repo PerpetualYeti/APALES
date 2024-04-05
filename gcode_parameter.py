@@ -11,77 +11,71 @@ according to requirements of material.
 import re
 import os
 
-f_number = str()
-scaling_factor = 0.0
 
-# Read feed rate and spindle speed parameters from parameter file
-def read_parameter(file):
-    with open(file, 'r') as param_file:
-        global f_number 
-        global scaling_factor
-        f_number = param_file.readline().strip()
-        s_number = param_file.readline().strip()
-        scaling_factor = int(s_number[1:]) / 1000.0
+class gCodeParameteriser:
+
+    # Regular expressions for S parameters (spindle speed) and F parameters (feed rate)  
+    s_param = r'S\d+'
+    f_param = r'F\d+'
+
+    gcode_dir = 'gcode_examples'
+    param_dir = 'laser_parameters'
+
+    def __init__(self, param_file, gcode_file):
+        self.param_file = os.path.join(gCodeParameteriser.param_dir, param_file.strip())
+        self.original_gcode = os.path.join(gCodeParameteriser.gcode_dir, gcode_file.strip())
+        self.updated_gcode = os.path.join(gCodeParameteriser.gcode_dir, 'output.nc')
+
+
+
+    # Read feed rate and spindle speed parameters from parameter file
+    def read_parameter(self):
+        with open(self.param_file, 'r') as file_obj:
+            self.f_number = file_obj.readline().strip()
+            s_number = file_obj.readline().strip()
+            self.scaling_factor = int(s_number[1:]) / 1000.0
         
-    
 
-# Regular expressions for S parameters (spindle speed) and F parameters (feed rate)  
-s_param = r'S\d+'
-f_param = r'F\d+'
+    # Update parameter of original g_code
+    def update_parameter(self):
 
-gcode_dir = 'gcode_examples'
+        try:
+            with open(self.original_gcode, "r") as in_file, open(self.updated_gcode, "w") as out_file:
+                for line in in_file:
+                    if 'S' in line:
+                        # Generate updated line using modify_s() function
+                        updated_line = re.sub(gCodeParameteriser.s_param, self.modify_s, line)
+                        out_file.write(updated_line)
+                    elif 'F' in line:
+                        # Generate updated line using sub function
+                        updated_line = re.sub(gCodeParameteriser.f_param, self.f_number, line)
+                        out_file.write(updated_line)
 
-original_file = input("Enter file name:")
+                    else:
+                        out_file.write(line)
+                            
+        except FileNotFoundError:
+            print("File not found")
+        except IOError:
+            print("Error reading file")
+        
 
-original_gcode = os.path.join(gcode_dir,original_file.strip())
-updated_gcode = os.path.join(gcode_dir,'output.nc')
-
-def update_parameter():
-
-    global f_number
-
-    try:
-        with open(original_gcode, "r") as in_file, open(updated_gcode, "w") as out_file:
-            for line in in_file:
-                if 'S' in line:
-                    # Generate updated line using modify_s() function
-                    updated_line = re.sub(s_param, modify_s, line)
-                    out_file.write(updated_line)
-                elif 'F' in line:
-                    # Generate updated line using modify_f() function
-                    updated_line = re.sub(f_param, f_number, line)
-                    out_file.write(updated_line)
-
-                else:
-                    out_file.write(line)
-                          
-    except FileNotFoundError:
-        print("File not found")
-    except IOError:
-        print("Error reading file")
-    
-
-def modify_s(match):
-
-    global scaling_factor
-
-    # Set scaling factor for S Parameter
-    # This corresponds to MAX PWM for the job
+    def modify_s(self,match):
 
 
-    # Extract number from S parameter
-    old_value = int(match.group()[1:])
-
-    # Specify the new value for the "S" parameter
-    new_value = round(old_value * scaling_factor)
-
-    # Re-append the 'S' the replacement string
-    replacement = 'S' + str(new_value)
-
-    return replacement
+        # Set scaling factor for S Parameter
+        # This corresponds to MAX PWM for the job
 
 
-if __name__ == "__main__":
-    read_parameter('laser_parameters\Wood_Parameters.txt')
-    update_parameter()
+        # Extract number from S parameter
+        old_value = int(match.group()[1:])
+
+        # Specify the new value for the "S" parameter
+        new_value = round(old_value * self.scaling_factor)
+
+        # Re-append the 'S' the replacement string
+        replacement = 'S' + str(new_value)
+
+        return replacement
+
     

@@ -1,12 +1,23 @@
+# Senior Design 2 Spring 2024 Group 5: APALES
+# Authors: Kavinaash Jesurajah, Nolan McGinley
+# laserMenuGUI.py
+
+""" 
+Description: Python module to do ...
+UPDATE THIS COMMENT, KAV
+"""
+
+
+
 import tkinter as tk
+from tkinter import scrolledtext, messagebox
 from PIL import Image, ImageTk
 import subprocess
 import numpy as np
-from tkinter import messagebox
+
 import os
 import subprocess
 import queue
-from tkinter import scrolledtext
 import threading
 import time
 

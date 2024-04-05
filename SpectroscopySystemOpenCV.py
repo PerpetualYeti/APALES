@@ -1,5 +1,11 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Senior Design 2 Spring 2024 Group 5: APALES
+# Authors: Kavinaash Jesurajah, Nolan McGinley
+# SpectroscopySystemOpenCV.py
+
+""" 
+Description: Python module to do ...
+UPDATE THIS COMMENT, KAV
+"""
 
 # In[73]:
 
