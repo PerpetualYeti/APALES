@@ -9,6 +9,7 @@ The grayscale image is then converted to a 1D array and saved to a text file.
 The text file is saved in the "Existing Materials" directory.
 The image is saved in the "output_sliced_area" directory.
 The grayscale image is saved in the "output_sliced_area" directory.
+FOR NEW MATERIAL!!!
 """
 
 # In[73]:
