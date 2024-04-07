@@ -1,7 +1,11 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Senior Design 2 Spring 2024 Group 5: APALES
+# Authors: Kavinaash Jesurajah, Nolan McGinley
+# SpectroscopySystemExistingMaterial.py
 
-# In[73]:
+""" 
+Description: Python module to do ...
+UPDATE THIS COMMENT, KAV
+"""
 
 
 import cv2
