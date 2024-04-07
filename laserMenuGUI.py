@@ -3,8 +3,7 @@
 # laserMenuGUI.py
 
 """ 
-Description: Python module to do ...
-UPDATE THIS COMMENT, KAV
+Description: GUI for the user to select a material and its parameters.
 """
 
 

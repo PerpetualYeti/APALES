@@ -3,8 +3,12 @@
 # SpectroscopySystemOpenCV.py
 
 """ 
-Description: Python module to do ...
-UPDATE THIS COMMENT, KAV
+Description: Calls camera to take a picture of the material at a certain resolution.
+The image is then sliced to a certain area and converted to grayscale.
+The grayscale image is then converted to a 1D array and saved to a text file.
+The text file is saved in the "Existing Materials" directory.
+The image is saved in the "output_sliced_area" directory.
+The grayscale image is saved in the "output_sliced_area" directory.
 """
 
 # In[73]:
