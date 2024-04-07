@@ -102,5 +102,3 @@ class gCodeSender:
 		else:
 			print("Serial connection is closed")
 			return False
-
-
