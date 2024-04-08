@@ -3,10 +3,8 @@
 # laserMenuGUI.py
 
 """ 
-Description: Python module to do ...
-UPDATE THIS COMMENT, KAV
+Description: GUI for the user to select a material and its parameters.
 """
-
 
 
 import tkinter as tk
@@ -20,7 +18,15 @@ import queue
 import threading
 import time
 
+import tkinter as tk
+from tkinter import scrolledtext
+import subprocess
+import threading
+import queue
+
 start_time = 0
+import serial.tools.list_ports
+
 
 def selection(event):
     if variable.get() == "New Material":
@@ -38,7 +44,8 @@ def selection(event):
         speedEntry.pack_forget()
         pwmLabel.pack_forget()
         pwmEntry.pack_forget()
-        confirmButton.pack()  # Pack the "Confirm" button
+
+        
 
 
 def euclidean_distance(a, b):
@@ -71,6 +78,18 @@ root = tk.Tk()
 root.geometry("1000x500")
 root.title("APALES")
 
+# Create a StringVar for the COM port dropdown
+com_port_var = tk.StringVar(root)
+
+ # Get a list of available COM ports
+com_ports = [comport.device for comport in serial.tools.list_ports.comports()]
+# Set the default value to the first COM port
+if com_ports:
+        com_port_var.set(com_ports[0])
+
+# Create the COM port dropdown menu
+com_port_dropdown = tk.OptionMenu(root, com_port_var, *com_ports)
+com_port_dropdown.pack(side='right')
 
 # Create the "Laser Parameters" directory if it doesn't exist
 laser_parameters_dir = "laser_parameters"
@@ -111,6 +130,7 @@ def selection(event):
         startButton.pack()  # Pack the "Start" button
         startLabelExisting.pack_forget()  # Unpack the "Start Spectroscopy System Existing" label
         startButtonExisting.pack_forget()  # Unpack the "Start Existing" button
+        startComparison.pack_forget()  # Unpack the "Comparison" label
         confirmButton.pack_forget()  # Unpack the "Confirm" button
     else:
         nameLabel.pack_forget()
@@ -122,8 +142,9 @@ def selection(event):
         saveButton.pack_forget()  # Unpack the "Save" button
         startLabel.pack_forget()  # Unpack the "Start Spectroscopy System" label
         startButton.pack_forget()  # Unpack the "Start" button
-        startLabelExisting.pack()  # Pack the "Start Spectroscopy System Existing" label
+        startLabelExisting.pack()  # Pack the "Comparison" label
         startButtonExisting.pack()  # Pack the "Start Existing" button
+        startComparison.pack()  # Pack the Comparison" label
         confirmButton.pack()  # Pack the "Confirm" button
 
 heading = tk.Label(root, text="APALES Material Selection", font=("Arial", 32))
@@ -160,13 +181,17 @@ startButton = tk.Button(root, text="Start", command=start_spectroscopy_system)
 # Create a label for the button
 startLabel = tk.Label(root, text="Start Spectroscopy System", font=("Arial", 12))
 
-confirmButton = tk.Button(root, text="Confirm", command=confirm)
+confirmButton = tk.Button(root, text="Compare", command=confirm)
 
 # Create the "Start Existing" button
 startButtonExisting = tk.Button(root, text="Start Existing", command=start_spectroscopy_system_existing)
 
+# Create a label for the confirm button
+startComparison = tk.Label(root, text="Start Comparison", font=("Arial", 12))
+
 # Create a label for the button
 startLabelExisting = tk.Label(root, text="Start Spectroscopy System Existing", font=("Arial", 12))
+
 # Variable to keep track of the laser pulse state
 laser_pulse_on = False
 
@@ -223,10 +248,10 @@ def handle_input(event=None):
     input_queue.put(user_input + '\n')
 
     # Handle the user's input
-    if user_input.lower() == "y":
+    if user_input.lower() == "Yes" or "yes":
         output_box.insert(tk.END, "Proceeding to the engraving process.\n")
         # Add your engraving process code here
-    elif user_input.lower() == "n":
+    elif user_input.lower() == "No" or "no":
         output_box.insert(tk.END, "Please input the data manually as a 'New Material' in the GUI.\n")
         # Add your code to handle this situation here
     else:
@@ -258,6 +283,5 @@ def confirm():
 
     # Start a new thread to write the user's input
     threading.Thread(target=write_input).start()
-
 
 root.mainloop()

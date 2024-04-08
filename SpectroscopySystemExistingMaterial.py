@@ -3,8 +3,16 @@
 # SpectroscopySystemExistingMaterial.py
 
 """ 
-Description: Python module to do ...
-UPDATE THIS COMMENT, KAV
+Description: Calls camera to take a picture of the material at a certain resolution.
+The image is then sliced to a certain area and converted to grayscale.
+The grayscale image is then converted to a 1D array and saved to a text file.
+The text file is saved in the "reference_data" directory.
+The image is saved in the "images" directory.
+The grayscale image is saved in the "images" directory.
+
+THE DIFFERENCE BETWEEN THIS CODE AND THE OPENCV ONE IS THAT:
+THIS IS FOR EXISTING MATERIALS, SO THE MATERIAL NAME IS NOT PASSED AS AN ARGUMENT.
+(This is the reference material to compare)
 """
 
 
