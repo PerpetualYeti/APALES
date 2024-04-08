@@ -4,7 +4,8 @@
 
 
 """ 
-Description: This script reads 1D arrays from text files, computes the Euclidean distance between them, 
+Description: This script reads 1D arrays from text files,
+computes the Euclidean distance between them, 
 and compares them to a reference array.
 """
 
