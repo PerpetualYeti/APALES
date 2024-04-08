@@ -16,7 +16,6 @@ import subprocess
 import numpy as np
 
 import os
-import subprocess
 import queue
 import threading
 import time
@@ -51,9 +50,8 @@ def start_spectroscopy_system():
 
 def start_spectroscopy_system_existing():
     global start_time
-    subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
     start_time = time.time()
-
+    subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
     print("--- %s seconds ---" % (time.time() - start_time))
 
 def confirm():
@@ -198,12 +196,6 @@ def toggle_laser_pulse():
 # Create a Button widget for the laser pulse
 laser_pulse_button = tk.Button(root, text="Laser Pulse: OFF", command=toggle_laser_pulse)
 laser_pulse_button.pack()
-
-import tkinter as tk
-from tkinter import scrolledtext
-import subprocess
-import threading
-import queue
 
 # Create a new window
 root = tk.Tk()
