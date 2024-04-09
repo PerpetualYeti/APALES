@@ -17,6 +17,8 @@ import os
 import queue
 import threading
 import time
+import serial.tools.list_ports
+
 
 
 def selection(event): # Function to select the material
@@ -56,6 +58,10 @@ def selection(event): # Function to select the material
         gcode_file_dropdown.pack() # Pack the g-code file dropdown menu
         run_file_button.pack() # Pack the "Run File" button
 
+
+#def euclidean_distance(a, b):
+ #   return np.sqrt(np.sum((a - b) ** 2))
+
 def start_spectroscopy_system():
     material_name = nameEntry.get()  # Get the material name from the Entry widget
     subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
@@ -66,9 +72,11 @@ def start_spectroscopy_system_existing():
 
     start_time = time.time()
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
-    # Display a popup message when the script finishes running
-    messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    time_elapsed = f'{(time.time() - start_time):.3f}'
+    
+    messagebox.showinfo(f"Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!\n\n"
+                         + "Time Elapsed: " + time_elapsed + " seconds" )
+    
 
 def confirm():
     # Run the array1DComparison.py script and capture its output
@@ -82,6 +90,33 @@ def confirm():
 
     # Start a new thread to read the output
     threading.Thread(target=read_output).start()
+    
+root = tk.Tk() # Create the main window
+root.geometry("1000x500") # Size of the window
+root.title("APALES") # Title of the window
+
+# Create a StringVar for the COM port dropdown
+com_port_var = tk.StringVar(root)
+
+# Get a list of available COM ports
+com_ports = [comport.device for comport in serial.tools.list_ports.comports()]
+
+# If no COM ports are available, set the default value to "No COM ports"
+if not com_ports:
+    com_ports = ["No COM ports"]
+        
+    # Set the default value to the first COM port
+    com_port_var.set(com_ports[0])
+
+# Create the COM port dropdown menu
+com_port_dropdown = tk.OptionMenu(root, com_port_var, *com_ports)
+com_port_dropdown.pack(side='right')
+
+
+
+# Create the "Laser Parameters" directory if it doesn't exist
+laser_parameters_dir = "laser_parameters"
+os.makedirs(laser_parameters_dir, exist_ok=True)
 
 def save(): # Function to save the material data
     # Get the material data
@@ -97,7 +132,61 @@ def save(): # Function to save the material data
 # Display "Saved!" in the same window
     savedLabel.config(text="Saved!", font=("Arial", 12))
     savedLabel.pack()
-  
+
+# Create the "Saved!" label
+savedLabel = tk.Label(root, text="")
+
+# Create the "Save" button
+saveButton = tk.Button(root, text="Save", command=save)
+
+
+
+heading = tk.Label(root, text="APALES Material Selection", font=("Arial", 32))
+heading.pack()
+
+heading = tk.Label(root, text="Please select an option:", font=("Arial", 16))
+heading.pack()
+
+image = Image.open("APALES Logo.png")  # replace with your logo file
+image = image.resize((100, 100), Image.BICUBIC)
+logo = ImageTk.PhotoImage(image)
+logoLabel = tk.Label(root, image=logo)
+logoLabel.pack()
+
+variable = tk.StringVar(root)
+variable.set("Pick an option:")  # default value
+
+options = ["New Material", "Existing Material"]
+dropdown = tk.OptionMenu(root, variable, *options, command=selection)
+dropdown.config(bg='lightblue', fg='black', activebackground='blue', activeforeground='white')
+dropdown.pack()
+
+nameLabel = tk.Label(root, text="Name of the material:")
+nameEntry = tk.Entry(root)
+speedLabel = tk.Label(root, text="Laser speed (mm/min):")
+speedEntry = tk.Entry(root)
+pwmLabel = tk.Label(root, text="S-Max (G-code parameter):")
+pwmEntry = tk.Entry(root)
+
+
+# Create the "Start" button
+startButton = tk.Button(root, text="Start", command=start_spectroscopy_system)
+
+# Create a label for the button
+startLabel = tk.Label(root, text="Start Spectroscopy System", font=("Arial", 12))
+
+confirmButton = tk.Button(root, text="Compare", command=confirm)
+
+# Create a StringVar to hold the selected g-code file
+gcode_file_var = tk.StringVar()
+
+# Create the g-code file dropdown menu
+gcode_file_dropdown = tk.OptionMenu(root, gcode_file_var, [])
+gcode_file_dropdown.pack()
+
+# Specify the relative path to the "gcode_examples" folder
+gcode_examples = os.path.relpath("gcode_examples")
+
 # Function to populate the g-code files list and update the OptionMenu widget
 def update_gcode_files():
     # Get a list of all .gc files in the "gcode_examples" folder
@@ -124,170 +213,6 @@ def run_file():
         # Run the selected g-code file
         print(f"Running {selected_file}")
         # Add your code to run the g-code file here
-
-# Function to handle the laser pulse button click
-def toggle_laser_pulse():
-    global laser_pulse_on
-
-    # Toggle the laser pulse state
-    laser_pulse_on = not laser_pulse_on
-
-    # Update the laser pulse button text
-    if laser_pulse_on:
-        laser_pulse_button.config(text="Laser Pulse: ON")
-        # Add your code to turn on the laser pulse here
-    else:
-        laser_pulse_button.config(text="Laser Pulse: OFF")
-        # Add your code to turn off the laser pulse here
-
-    # Write the current state of the laser pulse to a file
-    with open(os.path.join(laser_pulse_dir, 'LaserPulseState.txt'), 'w') as file:
-        file.write("ON" if laser_pulse_on else "OFF")
-
-# Function to handle the user's input
-def handle_input(event=None):
-    # Get the user's input
-    user_input = input_box.get()
-
-    # Clear the input box
-    input_box.delete(0, tk.END)
-
-    # Add the user's input to the queue
-    input_queue.put(user_input + '\n')
-
-    # Handle the user's input
-    if user_input.lower() == "Yes" or "yes":
-        output_box.insert(tk.END, "Proceeding to the engraving process.\n")
-        # Add your engraving process code here
-    elif user_input.lower() == "No" or "no":
-        output_box.insert(tk.END, "Please input the data manually as a 'New Material' in the GUI.\n")
-        # Add your code to handle this situation here
-    else:
-        output_box.insert(tk.END, "Invalid input. Please enter 'Yes' or 'No'.\n")
-
-    # Scroll the output box to the end
-    output_box.see(tk.END)
-
-def confirm():
-    # Run the array1DComparison.py script and capture its output
-    process = subprocess.Popen(["python", "array1DComparison.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
-
-    # Function to write the user's input to the process
-    def write_input():
-        while True:
-            # Get the user's input from the queue
-            user_input = input_queue.get()
-
-            # Write the user's input to the process
-            process.stdin.write(user_input) # Write the user's input to the process
-            process.stdin.flush() # Flush the input buffer
-
-    # Start a new thread to write the user's input
-    threading.Thread(target=write_input).start()
-
-root = tk.Tk() # Create the main window
-root.geometry("1000x500") # Size of the window
-root.title("APALES") # Title of the window
-
-"""
-COM PORT DROPDOWN MENU SELECTING THE PORT TO CONNECT TO THE LASER
-"""
-
-# Create a StringVar for the COM port dropdown
-com_port_var = tk.StringVar(root)
-
-# Get a list of available COM ports
-com_ports = [comport.device for comport in serial.tools.list_ports.comports()]
-
-# If no COM ports are available, set the default value to "No COM ports"
-if not com_ports:
-    com_ports = ["No COM ports"]
-        
-    # Set the default value to the first COM port
-    com_port_var.set(com_ports[0])
-
-# Create the COM port dropdown menu
-com_port_dropdown = tk.OptionMenu(root, com_port_var, *com_ports)
-com_port_dropdown.pack(side='right')
-
-
-"""
-SAVES THE MATERIAL PARAMETERS TO A FILE
-IN THE "LASER PARAMETERS" DIRECTORY
-WHEN THE "SAVE" BUTTON IS CLICKED
-"""
-# Create the "Laser Parameters" directory if it doesn't exist
-laser_parameters_dir = "laser_parameters"
-os.makedirs(laser_parameters_dir, exist_ok=True)
-
-# Create the "Saved!" label
-savedLabel = tk.Label(root, text="")
-
-# Create the "Save" button
-saveButton = tk.Button(root, text="Save", command=save)
-
-"""
-GUI ELEMENTS FOR THE MAIN WINDOW
-"""
-heading = tk.Label(root, text="APALES Material Selection", font=("Arial", 32))
-heading.pack()
-
-heading = tk.Label(root, text="Please select an option:", font=("Arial", 16))
-heading.pack()
-
-"""
-APALES LOGO
-"""
-image = Image.open("APALES Logo.png")  # replace with your logo file
-image = image.resize((100, 100), Image.BICUBIC)
-logo = ImageTk.PhotoImage(image)
-logoLabel = tk.Label(root, image=logo)
-logoLabel.pack()
-
-# Create a StringVar to hold the selected option
-variable = tk.StringVar(root)
-variable.set("Pick an option:")  # default value
-
-# Create the dropdown menu
-options = ["New Material", "Existing Material"]
-dropdown = tk.OptionMenu(root, variable, *options, command=selection)
-dropdown.config(bg='lightblue', fg='black', activebackground='blue', activeforeground='white')
-dropdown.pack()
-
-"""
-USER INPUT AREA FOR MATERIAL INFORMATION IN GUI
-"""
-nameLabel = tk.Label(root, text="Name of the material:")
-nameEntry = tk.Entry(root)
-speedLabel = tk.Label(root, text="Laser speed (mm/min):")
-speedEntry = tk.Entry(root)
-pwmLabel = tk.Label(root, text="S-Max (G-code parameter):")
-pwmEntry = tk.Entry(root)
-
-# Create the "Start" button
-startButton = tk.Button(root, text="Start", command=start_spectroscopy_system)
-
-# Create a label for the button
-startLabel = tk.Label(root, text="Start Spectroscopy System", font=("Arial", 12))
-
-confirmButton = tk.Button(root, text="Compare", command=confirm)
-
-
-"""
-G-CODE FILE DROPDOWN MENU IN GUI FOR SELECTING A G-CODE FILE
-"""
-# Create a StringVar to hold the selected g-code file
-gcode_file_var = tk.StringVar()
-
-# Create the g-code file dropdown menu
-gcode_file_dropdown = tk.OptionMenu(root, gcode_file_var, [])
-gcode_file_dropdown.pack()
-
-# Get the directory of the script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Specify the relative path to the "gcode_examples" folder
-gcode_examples = os.path.join(script_dir, "gcode_examples")
 
 # Create the "Run File" button
 run_file_button = tk.Button(root, text="Run File", command=run_file)
@@ -316,6 +241,25 @@ laser_pulse_on = False
 laser_pulse_dir = "Laser Pulse"
 os.makedirs(laser_pulse_dir, exist_ok=True)
 
+# Function to handle the laser pulse button click
+def toggle_laser_pulse():
+    global laser_pulse_on
+
+    # Toggle the laser pulse state
+    laser_pulse_on = not laser_pulse_on
+
+    # Update the laser pulse button text
+    if laser_pulse_on:
+        laser_pulse_button.config(text="Laser Pulse: ON")
+        # Add your code to turn on the laser pulse here
+    else:
+        laser_pulse_button.config(text="Laser Pulse: OFF")
+        # Add your code to turn off the laser pulse here
+
+    # Write the current state of the laser pulse to a file
+    with open(os.path.join(laser_pulse_dir, 'LaserPulseState.txt'), 'w') as file:
+        file.write("ON" if laser_pulse_on else "OFF")
+
 # Create a Button widget for the laser pulse
 laser_pulse_button = tk.Button(root, text="Laser Pulse: OFF", command=toggle_laser_pulse)
 laser_pulse_button.pack()
@@ -337,11 +281,53 @@ input_box.pack()
 # Create a queue for user input
 input_queue = queue.Queue()
 
+# Function to handle the user's input
+def handle_input(event=None):
+    # Get the user's input
+    user_input = input_box.get()
+
+    # Clear the input box
+    input_box.delete(0, tk.END)
+
+    # Add the user's input to the queue
+    input_queue.put(user_input + '\n')
+
+    # Handle the user's input
+    if user_input.lower() == "Yes" or "yes":
+        output_box.insert(tk.END, "Proceeding to the engraving process.\n")
+        # Add your engraving process code here
+    elif user_input.lower() == "No" or "no":
+        output_box.insert(tk.END, "Please input the data manually as a 'New Material' in the GUI.\n")
+        # Add your code to handle this situation here
+    else:
+        output_box.insert(tk.END, "Invalid input. Please enter 'Yes' or 'No'.\n")
+
+    # Scroll the output box to the end
+    output_box.see(tk.END)
+
 # Bind the Return key to the handle_input function
 root.bind("<Return>", handle_input)
 
 # Create a "Submit" button
 submit_button = tk.Button(root, text="Submit", command=handle_input)
 submit_button.pack() # Pack the "Submit" button
+
+def confirm():
+    # Run the array1DComparison.py script and capture its output
+    process = subprocess.Popen(["python", "array1DComparison.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
+
+    # Function to write the user's input to the process
+    def write_input():
+        while True:
+            # Get the user's input from the queue
+            user_input = input_queue.get()
+
+            # Write the user's input to the process
+            process.stdin.write(user_input) # Write the user's input to the process
+            process.stdin.flush() # Flush the input buffer
+
+    # Start a new thread to write the user's input
+    threading.Thread(target=write_input).start()
+
 
 root.mainloop()
