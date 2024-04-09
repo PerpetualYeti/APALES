@@ -45,9 +45,6 @@ def selection(event):
         pwmLabel.pack_forget()
         pwmEntry.pack_forget()
 
-        
-
-
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
 
@@ -81,11 +78,15 @@ root.title("APALES")
 # Create a StringVar for the COM port dropdown
 com_port_var = tk.StringVar(root)
 
- # Get a list of available COM ports
+# Get a list of available COM ports
 com_ports = [comport.device for comport in serial.tools.list_ports.comports()]
-# Set the default value to the first COM port
-if com_ports:
-        com_port_var.set(com_ports[0])
+
+# If no COM ports are available, set the default value to "No COM ports"
+if not com_ports:
+    com_ports = ["No COM ports"]
+        
+    # Set the default value to the first COM port
+    com_port_var.set(com_ports[0])
 
 # Create the COM port dropdown menu
 com_port_dropdown = tk.OptionMenu(root, com_port_var, *com_ports)
