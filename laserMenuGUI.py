@@ -27,25 +27,6 @@ import queue
 start_time = 0
 import serial.tools.list_ports
 
-"""
-def selection(event): # Function to select the material
-    if variable.get() == "New Material":
-        nameLabel.pack()
-        nameEntry.pack()
-        speedLabel.pack()
-        speedEntry.pack()
-        pwmLabel.pack()
-        pwmEntry.pack()
-        confirmButton.pack_forget()  # Unpack the "Confirm" button
-    else:
-        nameLabel.pack_forget()
-        nameEntry.pack_forget()
-        speedLabel.pack_forget()
-        speedEntry.pack_forget()
-        pwmLabel.pack_forget()
-        pwmEntry.pack_forget()
-"""
-
 def selection(event): # Function to select the material
     if variable.get() == "New Material":
         nameLabel.pack()
