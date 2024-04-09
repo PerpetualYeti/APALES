@@ -27,8 +27,8 @@ import queue
 start_time = 0
 import serial.tools.list_ports
 
-
-def selection(event):
+"""
+def selection(event): # Function to select the material
     if variable.get() == "New Material":
         nameLabel.pack()
         nameEntry.pack()
@@ -44,6 +44,45 @@ def selection(event):
         speedEntry.pack_forget()
         pwmLabel.pack_forget()
         pwmEntry.pack_forget()
+"""
+
+def selection(event): # Function to select the material
+    if variable.get() == "New Material":
+        nameLabel.pack()
+        nameEntry.pack()
+        speedLabel.pack()
+        speedEntry.pack()
+        pwmLabel.pack()
+        pwmEntry.pack()
+        saveButton.pack()  # Pack the "Save" button
+        startLabel.pack()  # Pack the "Start Spectroscopy System" label
+        startButton.pack()  # Pack the "Start" button
+        startLabelExisting.pack_forget()  # Unpack the "Start Spectroscopy System Existing" label
+        startButtonExisting.pack_forget()  # Unpack the "Start Existing" button
+        startComparison.pack_forget()  # Unpack the "Comparison" label
+        confirmButton.pack_forget()  # Unpack the "Confirm" button
+        gcode_dropdown_label.pack_forget() # Unpack the g-code dropdown label
+        gcode_file_dropdown.pack_forget() # Unpack the g-code file dropdown menu
+        run_file_button.pack_forget() # Unpack the "Run File" button
+
+    else:
+        nameLabel.pack_forget()
+        nameEntry.pack_forget()
+        speedLabel.pack_forget()
+        speedEntry.pack_forget()
+        pwmLabel.pack_forget()
+        pwmEntry.pack_forget()
+        saveButton.pack_forget()  # Unpack the "Save" button
+        startLabel.pack_forget()  # Unpack the "Start Spectroscopy System" label
+        startButton.pack_forget()  # Unpack the "Start" button
+        startLabelExisting.pack()  # Pack the "Comparison" label
+        startButtonExisting.pack()  # Pack the "Start Existing" button
+        startComparison.pack()  # Pack the Comparison" label
+        confirmButton.pack()  # Pack the "Confirm" button
+        gcode_dropdown_label.pack() # Pack the g-code dropdown label
+        gcode_file_dropdown.pack() # Pack the g-code file dropdown menu
+        run_file_button.pack() # Pack the "Run File" button
+
 
 def euclidean_distance(a, b):
     return np.sqrt(np.sum((a - b) ** 2))
@@ -75,9 +114,9 @@ def confirm():
     # Start a new thread to read the output
     threading.Thread(target=read_output).start()
     
-root = tk.Tk()
-root.geometry("1000x500")
-root.title("APALES")
+root = tk.Tk() # Create the main window
+root.geometry("1000x500") # Size of the window
+root.title("APALES") # Title of the window
 
 # Create a StringVar for the COM port dropdown
 com_port_var = tk.StringVar(root)
@@ -96,11 +135,13 @@ if not com_ports:
 com_port_dropdown = tk.OptionMenu(root, com_port_var, *com_ports)
 com_port_dropdown.pack(side='right')
 
+
+
 # Create the "Laser Parameters" directory if it doesn't exist
 laser_parameters_dir = "laser_parameters"
 os.makedirs(laser_parameters_dir, exist_ok=True)
 
-def save():
+def save(): # Function to save the material data
     # Get the material data
     name = nameEntry.get()
     speed = speedEntry.get()
@@ -122,35 +163,6 @@ savedLabel = tk.Label(root, text="")
 saveButton = tk.Button(root, text="Save", command=save)
 
 
-def selection(event):
-    if variable.get() == "New Material":
-        nameLabel.pack()
-        nameEntry.pack()
-        speedLabel.pack()
-        speedEntry.pack()
-        pwmLabel.pack()
-        pwmEntry.pack()
-        saveButton.pack()  # Pack the "Save" button
-        startLabel.pack()  # Pack the "Start Spectroscopy System" label
-        startButton.pack()  # Pack the "Start" button
-        startLabelExisting.pack_forget()  # Unpack the "Start Spectroscopy System Existing" label
-        startButtonExisting.pack_forget()  # Unpack the "Start Existing" button
-        startComparison.pack_forget()  # Unpack the "Comparison" label
-        confirmButton.pack_forget()  # Unpack the "Confirm" button
-    else:
-        nameLabel.pack_forget()
-        nameEntry.pack_forget()
-        speedLabel.pack_forget()
-        speedEntry.pack_forget()
-        pwmLabel.pack_forget()
-        pwmEntry.pack_forget()
-        saveButton.pack_forget()  # Unpack the "Save" button
-        startLabel.pack_forget()  # Unpack the "Start Spectroscopy System" label
-        startButton.pack_forget()  # Unpack the "Start" button
-        startLabelExisting.pack()  # Pack the "Comparison" label
-        startButtonExisting.pack()  # Pack the "Start Existing" button
-        startComparison.pack()  # Pack the Comparison" label
-        confirmButton.pack()  # Pack the "Confirm" button
 
 heading = tk.Label(root, text="APALES Material Selection", font=("Arial", 32))
 heading.pack()
@@ -188,14 +200,65 @@ startLabel = tk.Label(root, text="Start Spectroscopy System", font=("Arial", 12)
 
 confirmButton = tk.Button(root, text="Compare", command=confirm)
 
+# Create a StringVar to hold the selected g-code file
+gcode_file_var = tk.StringVar()
+
+# Create the g-code file dropdown menu
+gcode_file_dropdown = tk.OptionMenu(root, gcode_file_var, [])
+gcode_file_dropdown.pack()
+
+# Get the directory of the script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Specify the relative path to the "gcode_examples" folder
+gcode_examples = os.path.join(script_dir, "C:/Users/kavin/OneDrive/Desktop/UCF/Spring 2024/Senior Design II/APALES/APALES/gcode_examples")
+
+# Function to populate the g-code files list and update the OptionMenu widget
+def update_gcode_files():
+    # Get a list of all .gc files in the "gcode_examples" folder
+    gcode_files = [f for f in os.listdir(gcode_examples) if f.endswith(".nc")]
+
+    # Set the default value to the first g-code file
+    if gcode_files:
+        gcode_file_var.set(gcode_files[0])
+    else:
+        gcode_files = ["No g-code files"]
+        gcode_file_var.set(gcode_files[0])
+
+    # Update the OptionMenu widget
+    gcode_file_dropdown["menu"].delete(0, "end")
+    for gcode_file in gcode_files:
+        gcode_file_dropdown["menu"].add_command(label=gcode_file, command=tk._setit(gcode_file_var, gcode_file))
+
+# Function to run the selected g-code file
+def run_file():
+    selected_file = gcode_file_var.get()
+    if selected_file == "No g-code files":
+        print("No g-code file selected")
+    else:
+        # Run the selected g-code file
+        print(f"Running {selected_file}")
+        # Add your code to run the g-code file here
+
+# Create the "Run File" button
+run_file_button = tk.Button(root, text="Run File", command=run_file)
+run_file_button.pack()
+
+# Call the update_gcode_files function once the GUI is idle
+root.after_idle(update_gcode_files)
+
 # Create the "Start Existing" button
 startButtonExisting = tk.Button(root, text="Start Existing", command=start_spectroscopy_system_existing)
 
 # Create a label for the confirm button
 startComparison = tk.Label(root, text="Start Comparison", font=("Arial", 12))
 
+# Create a label for the g-code dropdown
+gcode_dropdown_label = tk.Label(root, text="G-Code File Search", font=("Arial", 12))
+
 # Create a label for the button
 startLabelExisting = tk.Label(root, text="Start Spectroscopy System Existing", font=("Arial", 12))
+
 
 # Variable to keep track of the laser pulse state
 laser_pulse_on = False
@@ -227,6 +290,9 @@ def toggle_laser_pulse():
 laser_pulse_button = tk.Button(root, text="Laser Pulse: OFF", command=toggle_laser_pulse)
 laser_pulse_button.pack()
 
+"""
+FOR USER INPUT AREA WINDOW IN GUI (TERMINAL-LIKE INTERFACE)
+"""
 # Create a new window
 root = tk.Tk()
 
@@ -270,7 +336,7 @@ root.bind("<Return>", handle_input)
 
 # Create a "Submit" button
 submit_button = tk.Button(root, text="Submit", command=handle_input)
-submit_button.pack()
+submit_button.pack() # Pack the "Submit" button
 
 def confirm():
     # Run the array1DComparison.py script and capture its output
@@ -283,10 +349,11 @@ def confirm():
             user_input = input_queue.get()
 
             # Write the user's input to the process
-            process.stdin.write(user_input)
-            process.stdin.flush()
+            process.stdin.write(user_input) # Write the user's input to the process
+            process.stdin.flush() # Flush the input buffer
 
     # Start a new thread to write the user's input
     threading.Thread(target=write_input).start()
+
 
 root.mainloop()
