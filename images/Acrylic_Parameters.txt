@@ -1,3 +1,0 @@
-Name: Acrylic
-Speed: 100
-Power: 100
