@@ -12,7 +12,7 @@ from tkinter import scrolledtext, messagebox
 from PIL import Image, ImageTk
 import subprocess
 import numpy as np
-
+import tkinter.messagebox as messagebox
 import os
 import queue
 import threading
@@ -51,11 +51,15 @@ def euclidean_distance(a, b):
 def start_spectroscopy_system():
     material_name = nameEntry.get()  # Get the material name from the Entry widget
     subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
+    # Display a popup message when the script finishes running
+    messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
 def start_spectroscopy_system_existing():
     global start_time
     start_time = time.time()
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
+    # Display a popup message when the script finishes running
+    messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
     print("--- %s seconds ---" % (time.time() - start_time))
 
 def confirm():
