@@ -192,7 +192,7 @@ gcode_file_dropdown.pack()
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Specify the relative path to the "gcode_examples" folder
-gcode_examples = os.path.join(script_dir, "C:/Users/kavin/OneDrive/Desktop/UCF/Spring 2024/Senior Design II/APALES/APALES/gcode_examples")
+gcode_examples = os.path.join(script_dir, "gcode_examples")
 
 # Function to populate the g-code files list and update the OptionMenu widget
 def update_gcode_files():
