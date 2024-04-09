@@ -17,15 +17,10 @@ import os
 import queue
 import threading
 import time
-
-import tkinter as tk
-from tkinter import scrolledtext
-import subprocess
-import threading
-import queue
-
-start_time = 0
 import serial.tools.list_ports
+
+# Global used to measure time for image capture and slice
+start_time = 0
 
 def selection(event): # Function to select the material
     if variable.get() == "New Material":
@@ -65,8 +60,8 @@ def selection(event): # Function to select the material
         run_file_button.pack() # Pack the "Run File" button
 
 
-def euclidean_distance(a, b):
-    return np.sqrt(np.sum((a - b) ** 2))
+#def euclidean_distance(a, b):
+ #   return np.sqrt(np.sum((a - b) ** 2))
 
 def start_spectroscopy_system():
     material_name = nameEntry.get()  # Get the material name from the Entry widget
@@ -78,9 +73,12 @@ def start_spectroscopy_system_existing():
     global start_time
     start_time = time.time()
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
+    time_elapsed = f'{(time.time() - start_time):.3f}'
+    #print("--- %s seconds ---" % ()
     # Display a popup message when the script finishes running
-    messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    messagebox.showinfo(f"Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!\n\n"
+                         + "Time Elapsed: " + time_elapsed + " seconds" )
+    
 
 def confirm():
     # Run the array1DComparison.py script and capture its output
