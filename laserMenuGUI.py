@@ -18,14 +18,6 @@ import queue
 import threading
 import time
 
-import tkinter as tk
-from tkinter import scrolledtext
-import subprocess
-import threading
-import queue
-
-start_time = 0
-import serial.tools.list_ports
 
 def selection(event): # Function to select the material
     if variable.get() == "New Material":
@@ -75,7 +67,7 @@ def start_spectroscopy_system():
     messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
 def start_spectroscopy_system_existing():
-    global start_time
+
     start_time = time.time()
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
     # Display a popup message when the script finishes running

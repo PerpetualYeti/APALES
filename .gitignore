@@ -2,5 +2,3 @@
 reference_data/reference_array.txt
 images/captured_image.jpg
 __pycache__/
-driver.py
-driver2.py
