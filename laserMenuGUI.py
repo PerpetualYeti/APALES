@@ -56,10 +56,6 @@ def selection(event): # Function to select the material
         gcode_file_dropdown.pack() # Pack the g-code file dropdown menu
         run_file_button.pack() # Pack the "Run File" button
 
-
-def euclidean_distance(a, b):
-    return np.sqrt(np.sum((a - b) ** 2))
-
 def start_spectroscopy_system():
     material_name = nameEntry.get()  # Get the material name from the Entry widget
     subprocess.run(["python", "SpectroscopySystemOpenCV.py", material_name])
