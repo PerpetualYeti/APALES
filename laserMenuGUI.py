@@ -19,8 +19,7 @@ import threading
 import time
 import serial.tools.list_ports
 
-# Global used to measure time for image capture and slice
-start_time = 0
+
 
 def selection(event): # Function to select the material
     if variable.get() == "New Material":
@@ -70,12 +69,11 @@ def start_spectroscopy_system():
     messagebox.showinfo("Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
 def start_spectroscopy_system_existing():
-    global start_time
+
     start_time = time.time()
     subprocess.run(["python", "SpectroscopySystemExistingMaterial.py"])
     time_elapsed = f'{(time.time() - start_time):.3f}'
-    #print("--- %s seconds ---" % ()
-    # Display a popup message when the script finishes running
+    
     messagebox.showinfo(f"Success", "Image area sliced, converted to grayscale, and 1D array written to text file successfully!\n\n"
                          + "Time Elapsed: " + time_elapsed + " seconds" )
     
@@ -186,11 +184,8 @@ gcode_file_var = tk.StringVar()
 gcode_file_dropdown = tk.OptionMenu(root, gcode_file_var, [])
 gcode_file_dropdown.pack()
 
-# Get the directory of the script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
 # Specify the relative path to the "gcode_examples" folder
-gcode_examples = os.path.join(script_dir, "gcode_examples")
+gcode_examples = os.path.relpath("gcode_examples")
 
 # Function to populate the g-code files list and update the OptionMenu widget
 def update_gcode_files():
