@@ -1,4 +1,3 @@
-print("Hello from driver")
 from gcode_parameter import gCodeParameteriser
 
 def main():

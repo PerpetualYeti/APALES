@@ -1,4 +1,11 @@
+__pycache__/
+
 # Captured image and txt file produced 
 reference_data/reference_array.txt
 images/captured_image.jpg
-__pycache__/
+
+# Output g-code file
+output.nc
+
+# GUI Test
+test_menu.py
