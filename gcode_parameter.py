@@ -24,7 +24,7 @@ class gCodeParameteriser:
     def __init__(self, param_file, gcode_file):
         self.param_file = os.path.join(gCodeParameteriser.param_dir, param_file.strip())
         self.original_gcode = os.path.join(gCodeParameteriser.gcode_dir, gcode_file.strip())
-        self.updated_gcode = os.path.join(gCodeParameteriser.gcode_dir, 'output.nc')
+        self.updated_gcode = os.path.relpath('output.nc')
 
 
 
