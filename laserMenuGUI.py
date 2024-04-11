@@ -312,7 +312,7 @@ root.bind("<Return>", handle_input)
 submit_button = tk.Button(root, text="Submit", command=handle_input)
 submit_button.pack() # Pack the "Submit" button
 
-def confirm():
+def confirmUserInput():
     # Run the array1DComparison.py script and capture its output
     process = subprocess.Popen(["python", "array1DComparison.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, universal_newlines=True)
 
