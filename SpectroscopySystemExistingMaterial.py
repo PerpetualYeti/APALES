@@ -25,64 +25,34 @@ import sys
 # The first argument is the script name, so the material name is the second argument
 # material_name = sys.argv[1]
 
-# In[74]:
-
 
 # Create a folder to save images if it doesn't exist
 folder_path = 'images'
 if not os.path.exists(folder_path):
     os.makedirs(folder_path)
 
-
-# In[75]:
-
-
 # Initialize the USB webcam (change the index if needed)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Change the index to 0, 1, 2, etc. depending on your setup
-
-
-# In[76]:
-
 
 # Check if the webcam is opened successfully
 if not cap.isOpened():
     print("Error: Could not open webcam")
     exit()
 
-
-# In[ ]:
-
-
 # Set the resolution to 2592x1944
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 2560)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1440)
 
-
-# In[ ]:
-
-
 # Capture a frame from the webcam
 ret, frame = cap.read()
-
-
-# In[ ]:
-
 
 # Check if the frame is captured successfully
 if not ret:
     print("Error: Could not capture frame")
     exit()
 
-
-# In[ ]:
-
-
 # Display the captured frame
 # cv2.imshow('Captured Image', frame)
-
-
-# In[ ]:
-
 
 # Save the captured frame to a file
 image_path = os.path.join(folder_path, 'captured_image.jpg')
@@ -94,18 +64,12 @@ print("Image saved successfully at", image_path)
 cap.release()
 cv2.destroyAllWindows()
 
-
-# In[ ]:
-
-
 # Example usage
 output_folder = "reference_data"
 x_start = 290      # Starting x-coordinate of the area
 y_start = 833      # Starting y-coordinate of the area
 x_end = 493      # Ending x-coordinate of the area
 y_end = 867        # Ending y-coordinate of the area
-# In[ ]:
-
 
 # Read the image
 image = cv2.imread(image_path)
@@ -140,20 +104,8 @@ with open(reference_array_path, "w") as f:
 
 print("Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
-
-# In[ ]:
-
-
 gray_image_dimensions = gray_area.shape
 
-
-# In[ ]:
-
-
 gray_image_dimensions
-
-
-# In[ ]:
-
 
 averaged_array = np.mean(gray_area, axis=0)
