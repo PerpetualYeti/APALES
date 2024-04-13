@@ -146,7 +146,7 @@ topFrame = tk.Frame(app, bg='lavender', width=800, height=100, relief="raised")
 topFrame.grid(row=0, column=0, columnspan=3, sticky='w')
 
 # APALES heading and option select subheading
-heading = tk.Label(app, text="APALES Material", font=("Arial", 22), bg='lavender')
+heading = tk.Label(app, text="APALES App", font=("Arial", 22), bg='lavender')
 heading.grid(row=0, column=1, pady= 10, sticky= 'nswe')
 
 subheading = tk.Label(app, text="Please select an option", font=("Arial", 14), bg= 'lavender') 
@@ -230,7 +230,7 @@ gcode_file_dropdown = tk.OptionMenu(app, gcode_file_var, [], command=update_prev
 gcode_file_dropdown.config(bg='lightblue', fg='black', activebackground='blue', activeforeground='white')
 gcode_file_dropdown.grid(row=2, column=0, sticky= 'nw', padx=15)
 
-# Image preview
+"""# Image preview
 # APALES LOGO
 preview_image = Image.open("gcode_examples\Handala.png")  # replace with your logo file
 preview_image = preview_image.resize((150, 150), Image.BICUBIC)
@@ -239,7 +239,7 @@ previewFrame = tk.Frame(width= 150, height = 150, padx=15, pady=10, relief='sunk
 previewFrame.grid(row=3, column=0, rowspan=10, sticky='w')
 
 previewLabel = tk.Label(previewFrame, image=preview)
-previewLabel.grid(sticky='nw')
+previewLabel.grid(sticky='nw')"""
 
 
 
