@@ -12,7 +12,7 @@ import serial
 import time
 import os
 
-class gCodeSender:
+class Sender:
 	# Constructor to initialise serial connection parameters 
 	def __init__(self, port: str, baudrate=115200):
 		self.port = port
@@ -72,7 +72,7 @@ class gCodeSender:
 	def send_job(self) -> bool:
 		# Open g-code file
 		try:
-			gcode_path = os.path.join('gcode_examples', 'output.nc')
+			gcode_path = 'output.nc'
 			f = open(gcode_path,'r')
 		except FileNotFoundError as e:
 			print(f"File not found {e}")
@@ -82,7 +82,7 @@ class gCodeSender:
 				print ('Sending gcode')
 				# Stream g-code
 				for line in f:
-					l = gCodeSender.removeComment(line)
+					l = Sender.removeComment(line)
 					l = l.strip() # Strip all EOL characters for streaming
 					if  (l.isspace()==False and len(l)>0) :
 						print ('Sending: ' + l)

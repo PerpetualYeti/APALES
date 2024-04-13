@@ -9,3 +9,8 @@ output.nc
 
 # GUI Test
 test_menu.py
+
+# Test driver files
+driver.py
+driver2.py
+test_menu.py

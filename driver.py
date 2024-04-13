@@ -1,11 +1,11 @@
-from gcode_sender import gCodeSender
+from gcodeSender import Sender
 
 def main():
     # Replace with actual COM port
     com_port = "COM6"
     print("Hello from driver")
     
-    sender = gCodeSender(com_port)
+    sender = Sender(com_port)
     sender.connect()
     sender.send_job()
     #sender.send_wakeup()

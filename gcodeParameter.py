@@ -12,7 +12,7 @@ import re
 import os
 
 
-class gCodeParameteriser:
+class Parameteriser:
 
     # Regular expressions for S parameters (spindle speed) and F parameters (feed rate)  
     s_param = r'S\d+'
@@ -22,8 +22,8 @@ class gCodeParameteriser:
     param_dir = 'laser_parameters'
 
     def __init__(self, param_file, gcode_file):
-        self.param_file = os.path.join(gCodeParameteriser.param_dir, param_file.strip())
-        self.original_gcode = os.path.join(gCodeParameteriser.gcode_dir, gcode_file.strip())
+        self.param_file = os.path.join(Parameteriser.param_dir, param_file.strip())
+        self.original_gcode = os.path.join(Parameteriser.gcode_dir, gcode_file.strip())
         self.updated_gcode = os.path.relpath('output.nc')
 
 
@@ -44,11 +44,11 @@ class gCodeParameteriser:
                 for line in in_file:
                     if 'S' in line:
                         # Generate updated line using modify_s() function
-                        updated_line = re.sub(gCodeParameteriser.s_param, self.modify_s, line)
+                        updated_line = re.sub(Parameteriser.s_param, self.modify_s, line)
                         out_file.write(updated_line)
                     elif 'F' in line:
                         # Generate updated line using sub function
-                        updated_line = re.sub(gCodeParameteriser.f_param, self.f_number, line)
+                        updated_line = re.sub(Parameteriser.f_param, self.f_number, line)
                         out_file.write(updated_line)
 
                     else:
