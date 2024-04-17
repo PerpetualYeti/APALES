@@ -12,29 +12,30 @@ and compares them to a reference array.
 import os
 import numpy as np
 
+# Read a 1D array from a text file.
+def read_array_from_file(filename):
+    with open(filename, 'r') as file:
+        array = np.loadtxt(file)
+    return array
+
+# Compute the Euclidean distance between two 1D arrays.
+def euclidean_distance(array1, array2):
+    return np.linalg.norm(array1 - array2)
+
+# Compare multiple arrays to a reference array and return the filename of the closest one.
+def compare_arrays_to_reference(arrays, reference_array, array_files):
+    min_distance = float('inf')
+    closest_file = None
+    for array, file in zip(arrays, array_files):
+        distance = euclidean_distance(array, reference_array)
+        if distance < min_distance:
+            min_distance = distance
+            closest_file = file
+    return closest_file
+
+
 def comparison() -> str:
         
-    # Read a 1D array from a text file.
-    def read_array_from_file(filename):
-        with open(filename, 'r') as file:
-            array = np.loadtxt(file)
-        return array
-
-    # Compute the Euclidean distance between two 1D arrays.
-    def euclidean_distance(array1, array2):
-        return np.linalg.norm(array1 - array2)
-
-    # Compare multiple arrays to a reference array and return the filename of the closest one.
-    def compare_arrays_to_reference(arrays, reference_array, array_files):
-        min_distance = float('inf')
-        closest_file = None
-        for array, file in zip(arrays, array_files):
-            distance = euclidean_distance(array, reference_array)
-            if distance < min_distance:
-                min_distance = distance
-                closest_file = file
-        return closest_file
-
     # Directory containing the existing material array files
     material_directory = os.path.relpath('existing_materials') 
 

@@ -15,7 +15,12 @@ The array txt file is saved in the "existing_materials" directory for new_spectr
 import cv2
 import os
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import array1DComparison
+
+
+existing_material_folder = "existing_materials"
+reference_data_folder = "reference_data"
 
 
 def capture_slice_array() -> str:
@@ -113,9 +118,13 @@ def existing_spectroscopy():
 
     print("Image area sliced, converted to grayscale, and 1D array written to text file successfully!")
 
+    classified_material = array1DComparison.comparison()
+
+    return classified_material
+
 def new_spectroscopy(material):
 
-    existing_material_folder = "existing_materials"
+    global existing_material_folder
 
     os.makedirs(existing_material_folder, exist_ok=True)
 
@@ -124,3 +133,49 @@ def new_spectroscopy(material):
     # Write the 1D array to a text file in the "Existing Materials" directory
     with open(os.path.join(existing_material_folder, f"{material}.txt"), "w") as f:
         f.write(float_str)
+
+def plot_arrays():
+
+    global reference_data_folder
+    global existing_material_folder
+    
+
+    reference_data = os.path.join(reference_data_folder, 'reference_array.txt')
+
+
+    with open(reference_data, 'r') as file:
+        reference_array = np.loadtxt(file)
+
+
+    # Get all text files in the material directory
+    array_files = [f for f in os.listdir(existing_material_folder) if f.endswith('.txt')]
+
+
+
+    # Create a figure and axis object
+    fig, axs = plt.subplots(len(array_files), figsize=(8,6))
+
+    # Create X-axis points to simulate wavelength
+    max_wavelength = 740
+    min_wavelength = 380
+    num_elements = 170
+
+    x_axis = np.linspace(max_wavelength, min_wavelength, num_elements)
+
+    print(x_axis)
+
+    # Read arrays from files and assign descriptive names based on filenames
+    existing_arrays = {}
+    for i, file in enumerate(array_files):
+        array_name = os.path.splitext(file)[0]  # Remove .txt extension to get a descriptive name
+        existing_arrays[array_name] = array1DComparison.read_array_from_file(os.path.join(existing_material_folder, file))
+        axs[i].plot(x_axis, existing_arrays[array_name],)
+        axs[i].plot(x_axis, reference_array)
+        axs[i].set_xlabel('Wavelength')
+        axs[i].set_ylabel('Intensity')
+        axs[i].set_title(array_name)
+        i += 1
+
+
+    # Show the plot
+    plt.show()

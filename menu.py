@@ -20,10 +20,14 @@ import time
 import serial.tools.list_ports
 
 import spectroscopy
-import array1DComparison
 import gcodeParameter
 import gcodeSender
 
+# Contains base gcode files with S-MAX set to 1000
+# Parameteriser scales this value down and updates F Parameters (feed rate)
+gcode_folder = "gcode_examples"
+
+# Contians laser parameters for each material added
 laser_parameters_folder = "laser_parameters"
 os.makedirs(laser_parameters_folder, exist_ok=True)
 
@@ -84,8 +88,7 @@ def new_material():
 def existing_material():
 
     start_time = time.time()
-    spectroscopy.existing_spectroscopy()
-    classified_material = array1DComparison.comparison()
+    classified_material = spectroscopy.existing_spectroscopy()
     end_time = (time.time() - start_time)
     # Display a popup message with time elapsed
     
@@ -113,10 +116,10 @@ def existing_material():
         messagebox.showinfo("Sorry about that.", "Please select 'New Material' and enter the information.")
 
 # Function to populate the g-code files list and update the OptionMenu widget
-def update_gcode_files():
+def update_gcode_files(folder):
 
     # Specify the relative path to the "gcode_examples" folder
-    gcode_examples = os.path.relpath("gcode_examples")
+    gcode_examples = os.path.relpath(folder)
     # Get a list of all .nc files in the "gcode_examples" folder
     gcode_files = [f for f in os.listdir(gcode_examples) if f.endswith(".nc")]
 
@@ -124,7 +127,7 @@ def update_gcode_files():
     if gcode_files:
         gcode_file_var.set(gcode_files[0])
     else:
-        gcode_files = ["No g-code files"]
+        gcode_files = ["No files found"]
         gcode_file_var.set(gcode_files[0])
 
     # Update the OptionMenu widget
@@ -244,7 +247,7 @@ previewLabel.grid(sticky='nw')
 
 
 # Call the update_gcode_files function once the GUI is idle
-app.after_idle(update_gcode_files)
+app.after_idle(update_gcode_files, gcode_folder)
 
 app.mainloop()
 
