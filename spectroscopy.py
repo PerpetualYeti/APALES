@@ -170,7 +170,7 @@ def plot_arrays():
         existing_arrays[array_name] = array1DComparison.read_array_from_file(os.path.join(existing_material_folder, file))
         axs[i].plot(x_axis, existing_arrays[array_name],)
         axs[i].plot(x_axis, reference_array)
-        axs[i].set_ylabel('Intensity')
+        axs[i].set_ylabel('Intensity (0-255)')
         axs[i].set_title(array_name)
         final_index = i
 
