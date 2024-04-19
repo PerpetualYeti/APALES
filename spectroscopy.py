@@ -168,8 +168,9 @@ def plot_arrays():
     for i, file in enumerate(array_files):
         array_name = os.path.splitext(file)[0]  # Remove .txt extension to get a descriptive name
         existing_arrays[array_name] = array1DComparison.read_array_from_file(os.path.join(existing_material_folder, file))
-        axs[i].plot(x_axis, existing_arrays[array_name],)
-        axs[i].plot(x_axis, reference_array)
+        axs[i].plot(x_axis, existing_arrays[array_name], label=f'{array_name} (saved)')
+        axs[i].plot(x_axis, reference_array, label='captured')
+        axs[i].legend(loc='upper left')
         axs[i].set_ylabel('Intensity (0-255)')
         axs[i].set_title(array_name)
         final_index = i
