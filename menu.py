@@ -211,7 +211,7 @@ subheading = tk.Label(app, text="Please select an option", font=("Arial", 14), b
 subheading.grid(row=0,column=1, sticky= 's')
 
 # APALES LOGO
-logo_image = Image.open("APALES Logo.png")  # replace with your logo file
+logo_image = Image.open("APALES_Logo.png")  # replace with your logo file
 logo_image = logo_image.resize((100, 100), Image.BICUBIC)
 logo = ImageTk.PhotoImage(logo_image)
 logoLabel = tk.Label(app, image=logo, bg='lavender')
@@ -293,7 +293,6 @@ gcode_file_dropdown.grid(row=2, column=0, sticky= 'nw', padx=15)
 
 
 # Image preview
-# APALES LOGO
 preview_image = Image.open("gcode_examples\star.png")  # replace with your logo file
 preview_image = preview_image.resize((150, 150), Image.BICUBIC)
 preview = ImageTk.PhotoImage(preview_image)
