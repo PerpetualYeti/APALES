@@ -171,12 +171,17 @@ def plot_arrays():
         axs[i].plot(x_axis, existing_arrays[array_name], label=f'{array_name} (saved)')
         axs[i].plot(x_axis, reference_array, label='captured')
         axs[i].legend(loc='upper left')
-        axs[i].set_ylabel('Intensity (0-255)')
+        # axs[i].set_ylabel('Pixel Intensity (0-255)')
         axs[i].set_title(array_name)
         final_index = i
 
-    axs[final_index].set_xlabel('Wavelength')
+    # Show shared X and Y labels
+    axs[final_index].set_xlabel('Wavelength (nm)')
+    fig.text(0.04, 0.4, 'Pixel Intensity (0-255)', ha='center', rotation = 'vertical')
 
+    # Adjust padding
+    fig.tight_layout(pad=1.6)
+    plt.subplots_adjust(left= 0.10)
+    
     # Show the plot
-    fig.tight_layout(pad=2.0)
     plt.show()
