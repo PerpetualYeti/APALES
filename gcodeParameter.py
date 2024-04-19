@@ -21,8 +21,9 @@ class Parameteriser:
     gcode_dir = 'gcode_examples'
     param_dir = 'laser_parameters'
 
-    def __init__(self, param_file, gcode_file):
-        self.param_file = os.path.join(Parameteriser.param_dir, param_file.strip())
+    def __init__(self, gcode_file, param_file =None):
+        if param_file is not None:
+            self.param_file = os.path.join(Parameteriser.param_dir, param_file.strip())
         self.original_gcode = os.path.join(Parameteriser.gcode_dir, gcode_file.strip())
         self.updated_gcode = os.path.relpath('output.nc')
 
@@ -34,13 +35,20 @@ class Parameteriser:
             self.f_number = file_obj.readline().strip()
             s_number = file_obj.readline().strip()
             self.scaling_factor = int(s_number[1:]) / 1000.0
-        
+    
+    # Read parameters from manual entry function
+    def read_parameter_manual(self, feed_rate, s_max):
+        self.f_number = str(f"F{feed_rate}")
+        self.scaling_factor = int(s_max) / 1000.0
+        print(self.scaling_factor)
 
     # Update parameter of original g_code
     def update_parameter(self):
 
         try:
             with open(self.original_gcode, "r") as in_file, open(self.updated_gcode, "w") as out_file:
+                out_file.write(f'; Updated Feed Rate: {self.f_number[1:]} mm/min\n')
+                out_file.write(f'; Updated S-Max: {int(self.scaling_factor * 1000)} ({round(self.scaling_factor * 100, 1)}% duty cycle)\n')
                 for line in in_file:
                     if 'S' in line:
                         # Generate updated line using modify_s() function

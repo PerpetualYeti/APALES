@@ -48,9 +48,10 @@ def option_select():
         pwmEntry.grid(row = 8, column= 1)
         saveButton.grid(row=9, column =1, pady=10)  
         startButton.grid_forget()
+        startManual.grid_forget()
         
         
-    else:
+    elif option == "Existing Material":
         info_frame.grid(row=2, column=1)
         info.config(text = "Place the material on the bed.\nStart spectroscopy and classification of material.")
         info.grid()
@@ -62,9 +63,57 @@ def option_select():
         pwmLabel.grid_forget()
         pwmEntry.grid_forget()
         saveButton.grid_forget() 
+        startManual.grid_forget()
         
+    else: 
+        info_frame.grid(row=2, column=1)
+        info.config(text = "Enter engraving parameters manually.")
+        info.grid()
+        speedLabel.grid(row=3, column =1)
+        speedEntry.grid(row = 4, column= 1)
+        pwmLabel.grid(row = 5, column= 1)
+        pwmEntry.grid(row = 6, column= 1)
+        startManual.grid(row = 7, column=1,  pady=10)
+        nameLabel.grid_forget()
+        nameEntry.grid_forget()
+        saveButton.grid_forget() 
+        startButton.grid_forget()
 
+# Starting engraving job. Used by 'Existing Material' and 'Manual Entry' functions
+def start_job(com):
+    if com == "No COM":
+        messagebox.showerror("No available COM Ports!!!", "Please connect laser CNC controller.")
+        return
 
+    sender = gcodeSender.Sender(port=com)
+    sender.connect()
+    sender.send_job()
+    
+
+def manual_entry():
+     # Get  values from textboxes
+    speed = speedEntry.get()
+    pwm = pwmEntry.get()
+
+    # Get currently selected g-code
+    current_gcode = gcode_file_var.get()
+
+    parameteriser = gcodeParameter.Parameteriser(gcode_file=current_gcode) 
+
+    parameteriser.read_parameter_manual(feed_rate=speed, s_max= pwm)
+
+    parameteriser.update_parameter()
+
+    engrave_question = messagebox.askquestion("Ready to engrave.", f"Job Paramters set.\n{current_gcode} is ready to be engraved.\n\nAre you ready to begin engraving?")
+
+    if engrave_question == 'no':
+            return
+    elif engrave_question == 'yes':
+        current_com =  com_port_var.get()
+        print(f"Manual job start:{current_gcode}.")
+        start_job(current_com)
+
+# Adds new material params and array to local directory
 def new_material():
 
     # Get  values from textboxes
@@ -84,7 +133,7 @@ def new_material():
     # Display a popup message with time elapsed
     messagebox.showinfo(f"Success! Time Elapsed: {(end_time):.3f} seconds.", f"New material array and parameters saved:\n{material_name}")
 
-
+# Auto classifies based on existing material and updates g-code parameters accordingly
 def existing_material():
 
     start_time = time.time()
@@ -92,28 +141,32 @@ def existing_material():
     end_time = (time.time() - start_time)
     # Display a popup message with time elapsed
     
-    question = messagebox.askquestion(f"Success! Time Elapsed: {(end_time):.3f} seconds.", f"Material captured and classified! \nClassified material: {classified_material} \n Is this correct?")
+    graph_question = messagebox.askquestion(f"Spectroscopy complete! Time Elapsed: {(end_time):.2f} seconds", f"Material captured and classified! \nClassified material: {classified_material}\n\nWould you like to see the wavelength graphs?")
+
+    if graph_question == 'yes':
+        spectroscopy.plot_arrays()
+
+    classify_question = messagebox.askquestion(f"Verify material.", f"Classified material: {classified_material}\n\nIs this correct?")
 
     # Get currently selected COM
     current_com =  com_port_var.get()
-    if question == 'yes':
+    if classify_question == 'yes':
         current_gcode = gcode_file_var.get()
-        parameteriser = gcodeParameter.Parameteriser(param_file=f'{classified_material}_parameters.txt', gcode_file=current_gcode)
+        parameteriser = gcodeParameter.Parameteriser( gcode_file=current_gcode, param_file=f'{classified_material}_parameters.txt')
         parameteriser.read_parameter()
         parameteriser.update_parameter()
-        messagebox.showinfo("Ready to engrave.", f"{current_gcode} is ready to be engraved on {classified_material}\nClick ok to begin job")
-       
-        if current_com == "No COM":
-            messagebox.showerror("No available COM Ports!!!", "Please connect laser CNC controller.")
-            return
+        engrave_question = messagebox.askquestion("Job parameters updated.\nReady to engrave.", f"{current_gcode} is ready to be engraved on {classified_material}\nAre you ready to begin engraving?")
 
-        sender = gcodeSender.Sender(port=current_com)
-        sender.connect()
-        sender.send_job()
-        print(current_com)
+        if engrave_question == 'no':
+            return
+        elif engrave_question == 'yes':
+            current_com =  com_port_var.get()
+            print(f"Existing material job start:{current_gcode} on {classified_material}.")
+            start_job(current_com)
+       
 
     else:
-        messagebox.showinfo("Sorry about that.", "Please select 'New Material' and enter the information.")
+        messagebox.showinfo("Sorry about that.", "Please select 'New Material' to re-add or 'Manual Entry' to set parameters directly.")
 
 # Function to populate the g-code files list and update the OptionMenu widget
 def update_gcode_files(folder):
@@ -135,8 +188,10 @@ def update_gcode_files(folder):
     for gcode_file in gcode_files:
         gcode_file_dropdown["menu"].add_command(label=gcode_file, command=tk._setit(gcode_file_var, gcode_file))
 
-def update_preview():
-    print('something')
+def update_preview(selection):
+    print("Hello from update preview")
+    #for file in os.listdir(gcode_folder):
+
 
 # Main Tkinter window
 app = tk.Tk()  
@@ -172,10 +227,11 @@ radio_frame.grid(row=1,column=1)
 
 radio_button1 = tk.Radiobutton(radio_frame, text="New Material", variable=radio_var, value="New Material", command=option_select)
 radio_button2 = tk.Radiobutton(radio_frame, text="Existing Material", variable=radio_var, value="Existing Material", command=option_select)
-# radio_button3 = tk.Radiobutton(radio_frame, text="Manual User Input", variable=radio_var, value="", command=option_select)
+radio_button3 = tk.Radiobutton(radio_frame, text="Manual Entry", variable=radio_var, value="Manual Entry", command=option_select)
 
 radio_button1.grid(sticky="w")
-radio_button2.grid(stick="e")
+radio_button2.grid(stick="w")
+radio_button3.grid(sticky= "w")
 
 radio_var.set(' ')
 
@@ -193,8 +249,10 @@ pwmEntry = tk.Entry(app)
 saveButton = tk.Button(app, text="Save", font=("Arial",14), bg= "lightyellow", command=new_material)
 
 # Existing material widgets
-startButton = tk.Button(app, text="Start", font=("Arial",14), bg= "lightgreen", command=existing_material)
+startButton = tk.Button(app, text="Start Spectroscopy", font=("Arial",14), bg= "lightgreen", command=existing_material)
 
+# Manual entry widgets
+startManual = tk.Button(app, text="Set Parameters", font=("Arial",14), bg= "lightgreen", command=manual_entry)
 
 # Create a StringVar for the COM port dropdown
 com_port_var = tk.StringVar(app)
@@ -233,6 +291,7 @@ gcode_file_dropdown = tk.OptionMenu(app, gcode_file_var, [], command=update_prev
 gcode_file_dropdown.config(bg='lightblue', fg='black', activebackground='blue', activeforeground='white')
 gcode_file_dropdown.grid(row=2, column=0, sticky= 'nw', padx=15)
 
+
 # Image preview
 # APALES LOGO
 preview_image = Image.open("gcode_examples\star.png")  # replace with your logo file
@@ -244,10 +303,8 @@ previewFrame.grid(row=3, column=0, rowspan=10, sticky='w')
 previewLabel = tk.Label(previewFrame, image=preview)
 previewLabel.grid(sticky='nw')
 
-
-
-# Call the update_gcode_files function once the GUI is idle
-app.after_idle(update_gcode_files, gcode_folder)
+# Update the dropdown when idling
+app.after_idle(update_gcode_files,gcode_folder)
 
 app.mainloop()
 

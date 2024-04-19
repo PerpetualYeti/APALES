@@ -153,7 +153,7 @@ def plot_arrays():
 
 
     # Create a figure and axis object
-    fig, axs = plt.subplots(len(array_files), figsize=(8,6))
+    fig, axs = plt.subplots(len(array_files), figsize=(8, 6) )
 
     # Create X-axis points to simulate wavelength
     max_wavelength = 740
@@ -162,20 +162,20 @@ def plot_arrays():
 
     x_axis = np.linspace(max_wavelength, min_wavelength, num_elements)
 
-    print(x_axis)
-
     # Read arrays from files and assign descriptive names based on filenames
+    final_index = int()
     existing_arrays = {}
     for i, file in enumerate(array_files):
         array_name = os.path.splitext(file)[0]  # Remove .txt extension to get a descriptive name
         existing_arrays[array_name] = array1DComparison.read_array_from_file(os.path.join(existing_material_folder, file))
         axs[i].plot(x_axis, existing_arrays[array_name],)
         axs[i].plot(x_axis, reference_array)
-        axs[i].set_xlabel('Wavelength')
         axs[i].set_ylabel('Intensity')
         axs[i].set_title(array_name)
-        i += 1
+        final_index = i
 
+    axs[final_index].set_xlabel('Wavelength')
 
     # Show the plot
+    fig.tight_layout(pad=2.0)
     plt.show()
