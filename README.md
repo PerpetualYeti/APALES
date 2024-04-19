@@ -1,8 +1,7 @@
 # APALES (Automated Parameter Adjusting Laser Engraving System)
 
 ## UCF Senior Design 2 Spring 2024  
-
-![Alt text]('/APALES Logo.png')
+![APALES Logo](APALES_Logo.png)
 
 
 Python program split into three major parts:
